@@ -1,0 +1,12 @@
+node_modules/
+dist/
+target/
+.tools/
+.env
+.env.*
+!.env.example
+*.log
+.idea/
+.DS_Store
+Rachai_Pacote_Handoff_GPT_Work/
+docs/.qa/

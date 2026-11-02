@@ -1,0 +1,22 @@
+name: rachai
+
+services:
+  oracle:
+    # Imagem oficial Oracle AI Database 26ai Free Lite, release 23.26.0.0.
+    # Digest linux/amd64 verificado no registro oficial; evita mudança silenciosa.
+    image: container-registry.oracle.com/database/free:23.26.0.0-lite@sha256:2b54beb4e3cfd0434918c2e43bc1f88da78ecc5e9c16fc7d8bbeb62ecbb62e11
+    container_name: rachai-oracle
+    ports:
+      - "127.0.0.1:1522:1521"
+    environment:
+      ORACLE_PWD: ${ORACLE_ADMIN_PASSWORD:?Execute scripts/oracle.ps1 setup primeiro}
+      ORACLE_CHARACTERSET: AL32UTF8
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+    shm_size: 1g
+    mem_limit: 3g
+    cpus: 2
+    restart: "no"
+
+volumes:
+  oracle-data:

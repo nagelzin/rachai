@@ -1,0 +1,39 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Frontend: iniciar",
+      "type": "shell",
+      "command": "npm run dev",
+      "windows": { "command": "powershell -NoProfile -File ../scripts/frontend.ps1 dev" },
+      "options": { "cwd": "${workspaceFolder}/frontend" },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Frontend: verificar",
+      "type": "shell",
+      "command": "npm run lint && npm test && npm run build",
+      "windows": { "command": "powershell -NoProfile -File ../scripts/frontend.ps1 check" },
+      "options": { "cwd": "${workspaceFolder}/frontend" },
+      "problemMatcher": []
+    },
+    {
+      "label": "Backend: testar",
+      "type": "shell",
+      "command": "./mvnw test",
+      "windows": { "command": "powershell -NoProfile -File ../scripts/test-backend.ps1" },
+      "options": { "cwd": "${workspaceFolder}/backend" },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Backend: iniciar (Windows)",
+      "type": "shell",
+      "command": "powershell -NoProfile -File ./scripts/start-backend.ps1",
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "problemMatcher": []
+    }
+  ]
+}
