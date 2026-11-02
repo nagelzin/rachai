@@ -15,7 +15,8 @@ public record DespesaResponse(
         PessoaDespesaResponse pagador,
         List<ParticipacaoDespesaResponse> participantes,
         long versao,
-        ComprovanteResponse comprovante) {
+        ComprovanteResponse comprovante,
+        String tipoDivisao) {
     public static DespesaResponse from(Despesa despesa) {
         return new DespesaResponse(
                 despesa.getId(),
@@ -39,6 +40,7 @@ public record DespesaResponse(
                         : new ComprovanteResponse(
                                 despesa.getComprovanteNome(),
                                 despesa.getComprovanteTipo(),
-                                despesa.getComprovanteTamanho()));
+                                despesa.getComprovanteTamanho()),
+                despesa.getTipoDivisao());
     }
 }

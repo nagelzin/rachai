@@ -19,4 +19,9 @@ public class SaldoController {
         return service.consultar(grupoId);
     }
 
+    @GetMapping("/{participanteId}")
+    public br.com.rachai.dto.DetalheSaldoResponse detalhar(
+            @PathVariable Long grupoId, @PathVariable Long participanteId) {
+        return service.detalhar(grupoId, participanteId);
+    }
 }

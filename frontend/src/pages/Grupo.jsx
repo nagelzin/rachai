@@ -1,6 +1,8 @@
 import Participantes from '../components/Participantes.jsx';
 import Despesas from '../components/Despesas.jsx';
 import Saldos from '../components/Saldos.jsx';
+import Acertos from '../components/Acertos.jsx';
+import Acompanhamento from '../components/Acompanhamento.jsx';
 import { useCallback, useState } from 'react';
 export default function Grupo({ grupo, usuario }) {
   const administrador = grupo.usuarioResponsavelId === usuario.id;
@@ -22,12 +24,19 @@ export default function Grupo({ grupo, usuario }) {
       </section>
       <div className="group-sections">
         <div className="group-summary">
+          <Acompanhamento grupoId={grupo.id} revisao={revisao} />
           <Participantes
             grupoId={grupo.id}
             administrador={administrador}
             onAlterados={atualizarSaldos}
           />
           <Saldos grupoId={grupo.id} usuarioId={usuario.id} revisao={revisao} />
+          <Acertos
+            grupoId={grupo.id}
+            revisao={revisao}
+            usuarioId={usuario.id}
+            onAlterados={atualizarSaldos}
+          />
         </div>
         <Despesas
           key={grupo.id}

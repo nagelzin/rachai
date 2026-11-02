@@ -25,6 +25,65 @@ public class SaldoService {
     }
 
     @Transactional
+    public DetalheSaldoResponse detalhar(Long grupoId, Long participanteId) {
+        var saldos = consultar(grupoId);
+        participantes
+                .findByIdAndGrupoId(participanteId, grupoId)
+                .orElseThrow(
+                        () ->
+                                new br.com.rachai.exception.NaoEncontradoException(
+                                        "Participante não encontrado neste grupo."));
+        if (!saldos.completo())
+            return new DetalheSaldoResponse(false, saldos.despesasPendentes(), null, List.of());
+        var participante =
+                saldos.participantes().stream()
+                        .filter(p -> p.participanteId().equals(participanteId))
+                        .findFirst()
+                        .orElseThrow();
+        var itens =
+                despesas.findByGrupoIdOrderByDataDescIdDesc(grupoId).stream()
+                        .filter(
+                                d ->
+                                        d.getPagador().getId().equals(participanteId)
+                                                || d.getEnvolvidos().stream()
+                                                        .anyMatch(
+                                                                p ->
+                                                                        p.getParticipante()
+                                                                                .getId()
+                                                                                .equals(
+                                                                                        participanteId)))
+                        .map(
+                                d -> {
+                                    var zero = new java.math.BigDecimal("0.00");
+                                    var pago =
+                                            d.getPagador().getId().equals(participanteId)
+                                                    ? d.getValorTotal()
+                                                    : zero;
+                                    var parte =
+                                            d.getEnvolvidos().stream()
+                                                    .filter(
+                                                            p ->
+                                                                    p.getParticipante()
+                                                                            .getId()
+                                                                            .equals(participanteId))
+                                                    .map(p -> p.getValorParte())
+                                                    .findFirst()
+                                                    .orElse(zero);
+                                    return new DetalheSaldoResponse.Item(
+                                            d.getId(),
+                                            d.getDescricao(),
+                                            d.getData(),
+                                            d.getValorTotal().setScale(2).toPlainString(),
+                                            d.getPagador().getNome(),
+                                            pago.setScale(2).toPlainString(),
+                                            parte.setScale(2).toPlainString(),
+                                            pago.subtract(parte).setScale(2).toPlainString());
+                                })
+                        .toList();
+        return new DetalheSaldoResponse(true, List.of(), participante, itens);
+    }
+
+    @Transactional
     public SaldosResponse consultar(Long grupoId) {
         grupos.buscar(grupoId);
         // O mesmo lock das mutações impede misturar membros/despesas de instantes diferentes.

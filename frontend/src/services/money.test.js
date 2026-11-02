@@ -33,6 +33,13 @@ test('formata reais preservando os centavos', () => {
   assert.equal(formatMoney('300.5'), 'R$ 300,50');
   assert.equal(formatMoney('300.00'), 'R$ 300,00');
 });
+test('parcela personalizada permite zero sem afrouxar os outros limites', () => {
+  assert.equal(parseMoney('0,00', true), '0.00');
+  assert.equal(parseMoney('1,23', true), '1.23');
+  for (const value of ['-1', '0,001', '', '10000000000'])
+    assert.throws(() => parseMoney(value, true));
+  assert.throws(() => parseMoney('0,00'));
+});
 test('a data padrão usa o calendário local, inclusive à noite', () => {
   assert.equal(todayLocal(new Date(2026, 9, 12, 23, 59)), '2026-10-12');
 });

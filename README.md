@@ -1,8 +1,8 @@
 # Rachaí
 
-Aplicação web responsiva para organizar despesas em grupo. Esta entrega implementa **as Ondas 1–4 (T01–T24) e contas/convites (T43–T50)**: grupos privados, despesas, divisão igual, comprovantes, listagem de despesas e saldos.
+Aplicação web responsiva para organizar despesas em grupo. Esta entrega implementa **as Ondas 1–8 (T01–T42) e contas/convites (T43–T50)**: grupos privados, despesas, divisão igual ou personalizada, comprovantes, histórico, detalhamento dos saldos, sugestões de acerto, registro de pagamentos e acompanhamento de pendências.
 
-O código está pronto para revisão local. O estado atual está em [Onda 4](docs/ONDA_4.md); a conclusão formal depende da homologação, das Issues e da revisão/integração da equipe. O Rachaí calcula saldos e não executa transferências bancárias.
+O código está pronto para revisão local. O estado atual está em [Onda 8](docs/ONDA_8.md); a conclusão formal depende da homologação, das Issues e da revisão/integração da equipe. O Rachaí registra pagamentos informados pelas pessoas e não executa transferências bancárias.
 
 ## Fontes de verdade
 
@@ -59,6 +59,7 @@ O setup salva senhas aleatórias no `.env` ignorado pelo Git. O script de inicia
 @database/migrations/004_correcao_despesas.sql
 @database/migrations/005_divisao_igual.sql
 @database/migrations/006_comprovantes.sql
+@database/migrations/007_acertos_divisao_personalizada.sql
 ```
 
 `ddl.sql` cria a base de usuários, grupos, participantes e despesas; as migrações acrescentam credenciais, vínculos por conta, convites, pagador, envolvidos e versão das despesas. Não faz DROP nem altera schemas existentes. Oracle faz commit implícito de DDL: em caso de falha parcial, inspecione o schema antes de repetir o script. `inserts.sql` preserva o usuário legado de demonstração, sem credenciais. Novos usuários devem criar sua conta na interface. Não repita o seed como rotina de inicialização. Para um schema já existente, execute somente `.\scripts\migrate-oracle.ps1`; não execute novamente o init.
@@ -135,7 +136,7 @@ Pastas sem uso (hooks, routes, assets, config) não foram criadas artificialment
 
 Remoto: [nagelzin/rachai](https://github.com/nagelzin/rachai). O repositório remoto estava vazio no setup. O trabalho local está na branch `task/onda-1`, ainda sem commits, push ou PR: o contexto exige revisão e compreensão humana antes de incorporar código gerado por IA.
 
-Os rascunhos das nove Issues originais foram preparados em [docs/ISSUES_ONDA_1.md](docs/ISSUES_ONDA_1.md), mas **não foram publicadas**. As tarefas T43–T50 estão na aba ACESSO do backlog e em `docs/ACESSO_E_CONVITES.md`, com responsáveis a definir. Todos os números de Issue continuam `--`. Após conectar o GitHub, criar as Issues reais, preencher seus números e organizar a integração por tarefa com revisão. Não registrar números ou estados de conclusão fictícios. As Ondas 2–4 têm implementação local e rascunhos em `docs/ISSUES_ONDA_2.md`, `docs/ISSUES_ONDA_3.md` e `docs/ISSUES_ONDA_4.md`. T25–T42 integram a segunda entrega, Ondas 5–8.
+Os rascunhos das nove Issues originais foram preparados em [docs/ISSUES_ONDA_1.md](docs/ISSUES_ONDA_1.md), mas **não foram publicadas**. As tarefas T43–T50 estão na aba ACESSO do backlog e em `docs/ACESSO_E_CONVITES.md`, com responsáveis a definir. Todos os números de Issue continuam `--`. Após conectar o GitHub, criar as Issues reais, preencher seus números e organizar a integração por tarefa com revisão. Não registrar números ou estados de conclusão fictícios. As Ondas 2–4 têm implementação local e rascunhos em `docs/ISSUES_ONDA_2.md`, `docs/ISSUES_ONDA_3.md` e `docs/ISSUES_ONDA_4.md`. T25–T42 foram implementadas nas Ondas 5–8; rascunhos complementares em `docs/ISSUES_ONDAS_5_A_8.md`.
 
 ## Usar as despesas da Onda 2
 
@@ -163,7 +164,12 @@ Se houver despesas antigas sem pagador ou divisão completa, a tela indica quais
 
 Validação local: 75 testes backend e 14 frontend, com evidências e roteiro de homologação em [Onda 4](docs/ONDA_4.md). Sem migração adicional ou mudança de stack.
 
+## Usar as Ondas 5–8
 
-## Organização desta entrega
+- **Consultar grupos anteriores** na página inicial: histórico e filtro por data de criação, somente para membros atuais.
+- **Ver despesas deste saldo**: detalhamento do que a pessoa pagou e de sua parte em cada lançamento.
+- **Como dividir?** no formulário: escolha divisão igual ou valores individuais. Confira a prévia antes de salvar.
+- **Acertos do grupo**: sugestões que consideram os pagamentos registrados, resumo para copiar/compartilhar e histórico. Quem paga ou recebe pode registrar o pagamento ou cancelar um registro incorreto.
+- **Pendências e progresso**: pessoas com valores ainda pendentes e percentual por quantidade de acertos. Atualiza após operações na própria tela; use os botões de atualização para consultar alterações de outras sessões.
 
-Recorte preparado em 02/11/2026 para o primeiro de dois commits. Não representa um commit histórico de outubro. Código reorganizado por escopo, sem nova execução de testes/build, conforme pedido do usuário. Evidências anteriores permanecem em docs/ONDA_1.md até docs/ONDA_4.md.
+Execute `scripts/migrate-oracle.ps1` antes de iniciar esta versão em uma instalação antiga: a migração 007 acrescenta ACERTOS e o tipo de divisão, preservando registros existentes. Não executar `init-oracle.ps1` em schema já criado. Mesma stack, sem bibliotecas adicionais. Evidências: [Onda 5](docs/ONDA_5.md), [Onda 6](docs/ONDA_6.md), [Onda 7](docs/ONDA_7.md), [Onda 8](docs/ONDA_8.md).

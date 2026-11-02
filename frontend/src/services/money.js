@@ -1,5 +1,5 @@
 // Não usa parseFloat/Number: o valor viaja até BigDecimal como string decimal.
-export function parseMoney(input) {
+export function parseMoney(input, allowZero = false) {
   const text = input.trim();
   if (!/^\d{1,10}([,.]\d{1,2})?$/.test(text)) {
     throw new Error(
@@ -9,7 +9,7 @@ export function parseMoney(input) {
   const [whole, fraction = ''] = text.replace(',', '.').split('.');
   const integer = whole.replace(/^0+(?=\d)/, '');
   const cents = fraction.padEnd(2, '0');
-  if (/^0+$/.test(integer + cents))
+  if (!allowZero && /^0+$/.test(integer + cents))
     throw new Error('O valor deve ser maior que zero.');
   return `${integer}.${cents}`;
 }

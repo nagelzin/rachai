@@ -35,4 +35,14 @@ public class GrupoController {
         return service.consultar(id);
     }
 
+    @GetMapping("/historico")
+    public java.util.List<GrupoResponse> historico(
+            @RequestParam(required = false)
+                    @org.springframework.format.annotation.DateTimeFormat(
+                            iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE)
+                    java.time.LocalDate ate) {
+        return service.listar().stream()
+                .filter(g -> ate == null || !g.criadoEm().toLocalDate().isAfter(ate))
+                .toList();
+    }
 }

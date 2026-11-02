@@ -18,16 +18,19 @@ public class ParticipanteService {
     private final GrupoParticipanteRepository participantes;
     private final DespesaRepository despesas;
     private final DespesaParticipanteRepository envolvidos;
+    private final br.com.rachai.repository.AcertoRepository acertos;
 
     public ParticipanteService(
             GrupoService grupos,
             GrupoParticipanteRepository participantes,
             DespesaRepository despesas,
-            DespesaParticipanteRepository envolvidos) {
+            DespesaParticipanteRepository envolvidos,
+            br.com.rachai.repository.AcertoRepository acertos) {
         this.grupos = grupos;
         this.participantes = participantes;
         this.despesas = despesas;
         this.envolvidos = envolvidos;
+        this.acertos = acertos;
     }
 
     public List<ParticipanteResponse> listar(Long grupoId) {
@@ -55,6 +58,10 @@ public class ParticipanteService {
             throw new ConflitoException(
                     "Essa pessoa está vinculada a uma despesa e não pode ser removida. Corrija o"
                             + " lançamento antes de remover o membro.");
+        if (acertos.existsByDevedorIdOrRecebedorId(participanteId, participanteId))
+            throw new ConflitoException(
+                    "Essa pessoa possui histórico de acertos e deve permanecer no grupo para"
+                        + " preservar os registros.");
         participantes.delete(p);
         participantes.flush();
     }

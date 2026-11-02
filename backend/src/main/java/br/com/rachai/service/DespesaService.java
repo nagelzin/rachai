@@ -48,6 +48,7 @@ public class DespesaService {
                         grupo, request.descricao().strip(), request.valorTotal(), request.data());
         despesa.definirPagador(pagador);
         despesa.definirEnvolvidos(validarEnvolvidos(grupoId, request.participanteIds()));
+        personalizar(despesa, request.valoresIndividuais());
         return DespesaResponse.from(despesas.save(despesa));
     }
 
@@ -76,8 +77,10 @@ public class DespesaService {
         java.util.Map<Long, java.math.BigDecimal> parcelas;
         try {
             parcelas =
-                    br.com.rachai.model.DivisaoIgual.calcular(
-                            request.valorTotal(), request.participanteIds());
+                    br.com.rachai.model.DivisaoPersonalizada.calcular(
+                            request.valorTotal(),
+                            request.participanteIds(),
+                            request.valoresIndividuais());
         } catch (IllegalArgumentException e) {
             throw new ConflitoException(e.getMessage());
         }
@@ -119,6 +122,7 @@ public class DespesaService {
         var envolvidos = validarEnvolvidos(grupoId, dados.participanteIds());
         despesa.corrigir(
                 dados.descricao().strip(), dados.valorTotal(), dados.data(), pagador, envolvidos);
+        personalizar(despesa, dados.valoresIndividuais());
         return DespesaResponse.from(despesas.saveAndFlush(despesa));
     }
 
@@ -135,6 +139,14 @@ public class DespesaService {
         return despesas.findByIdAndGrupoId(id, grupoId)
                 .orElseThrow(
                         () -> new NaoEncontradoException("Despesa não encontrada neste grupo."));
+    }
+
+    private void personalizar(Despesa despesa, java.util.Map<Long, java.math.BigDecimal> valores) {
+        try {
+            despesa.personalizar(valores);
+        } catch (IllegalArgumentException e) {
+            throw new ConflitoException(e.getMessage());
+        }
     }
 
     private void bloquearComoMembro(Long grupoId) {

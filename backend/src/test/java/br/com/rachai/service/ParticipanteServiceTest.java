@@ -22,6 +22,7 @@ class ParticipanteServiceTest {
     @Mock br.com.rachai.repository.DespesaParticipanteRepository envolvidos;
     @Mock br.com.rachai.repository.DespesaRepository despesas;
     @Mock GrupoParticipanteRepository participantes;
+    @Mock br.com.rachai.repository.AcertoRepository acertos;
     @InjectMocks ParticipanteService service;
     Grupo grupo;
     Usuario admin;

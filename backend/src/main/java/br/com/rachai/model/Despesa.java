@@ -37,6 +37,27 @@ public class Despesa {
     @Column(nullable = false)
     private long versao;
 
+    @Column(name = "tipo_divisao", nullable = false, length = 15)
+    private String tipoDivisao = "IGUAL";
+
+    public String getTipoDivisao() {
+        return tipoDivisao;
+    }
+
+    public void personalizar(Map<Long, BigDecimal> valores) {
+        if (valores == null) {
+            tipoDivisao = "IGUAL";
+            return;
+        }
+        var parcelas =
+                DivisaoPersonalizada.calcular(
+                        valorTotal,
+                        envolvidos.stream().map(v -> v.getParticipante().getId()).toList(),
+                        valores);
+        envolvidos.forEach(v -> v.definirValorParte(parcelas.get(v.getParticipante().getId())));
+        tipoDivisao = "PERSONALIZADA";
+    }
+
     @Column(name = "comprovante_nome", length = 120)
     private String comprovanteNome;
 

@@ -43,6 +43,13 @@ export async function request(path, options = {}) {
 const post = (path, data) =>
   request(path, { method: 'POST', body: JSON.stringify(data) });
 export const api = {
+  consultarProgresso: (id, signal) =>
+    request(`/grupos/${id}/progresso`, { signal, cache: 'no-store' }),
+  registrarAcerto: (id, dados) => post(`/grupos/${id}/acertos`, dados),
+  cancelarAcerto: (grupoId, id, versao) =>
+    post(`/grupos/${grupoId}/acertos/${id}/cancelamento`, { versao }),
+  consultarAcertos: (id, signal) =>
+    request(`/grupos/${id}/acertos/sugestoes`, { signal, cache: 'no-store' }),
   eu: (signal) => request('/auth/eu', { signal }),
   cadastrar: (dados) => post('/auth/cadastro', dados),
   entrar: (email, senha) =>
@@ -53,6 +60,16 @@ export const api = {
     }),
   sair: () => post('/auth/logout', {}),
   listarGrupos: (signal) => request('/grupos', { signal }),
+  historicoGrupos: (ate, signal) =>
+    request(
+      `/grupos/historico${ate ? `?ate=${encodeURIComponent(ate)}` : ''}`,
+      { signal, cache: 'no-store' },
+    ),
+  detalharSaldo: (id, participanteId, signal) =>
+    request(`/grupos/${id}/saldos/${participanteId}`, {
+      signal,
+      cache: 'no-store',
+    }),
   criarGrupo: (grupo) => post('/grupos', grupo),
   consultarGrupo: (id, signal) => request(`/grupos/${id}`, { signal }),
   consultarSaldos: (id, signal) =>
@@ -64,10 +81,11 @@ export const api = {
       method: 'DELETE',
     }),
   cadastrarDespesa: (id, despesa) => post(`/grupos/${id}/despesas`, despesa),
-  previaDivisao: (id, valorTotal, participanteIds) =>
+  previaDivisao: (id, valorTotal, participanteIds, valoresIndividuais) =>
     post(`/grupos/${id}/despesas/previa-divisao`, {
       valorTotal,
       participanteIds,
+      valoresIndividuais,
     }),
   listarDespesas: (grupoId, signal) =>
     request(`/grupos/${grupoId}/despesas`, { signal }),

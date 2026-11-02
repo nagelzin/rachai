@@ -20,4 +20,17 @@ public record CriarDespesaRequest(
         @NotNull(message = "Informe a data da despesa.") LocalDate data,
         @NotNull(message = "Selecione quem pagou.") @Positive Long pagadorId,
         @NotEmpty(message = "Selecione pelo menos um participante da despesa.")
-                List<@NotNull @Positive Long> participanteIds) {}
+                List<@NotNull @Positive Long> participanteIds,
+        java.util.Map<
+                        @NotNull @Positive Long,
+                        @NotNull @DecimalMin("0.00") @Digits(integer = 10, fraction = 2) BigDecimal>
+                valoresIndividuais) {
+    public CriarDespesaRequest(
+            String descricao,
+            BigDecimal valorTotal,
+            LocalDate data,
+            Long pagadorId,
+            List<Long> participanteIds) {
+        this(descricao, valorTotal, data, pagadorId, participanteIds, null);
+    }
+}

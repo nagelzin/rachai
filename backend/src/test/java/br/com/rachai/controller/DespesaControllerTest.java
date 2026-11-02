@@ -41,7 +41,8 @@ class DespesaControllerTest {
                                 new PessoaDespesaResponse(1L, "Ana", 1L),
                                 java.util.List.of(),
                                 0L,
-                                null));
+                                null,
+                                "IGUAL"));
         mvc.perform(
                         post("/api/grupos/1/despesas")
                                 .contentType("application/json")

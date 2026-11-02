@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { api } from '../services/api.js';
 import Feedback from '../components/Feedback.jsx';
+import HistoricoGrupos from '../components/HistoricoGrupos.jsx';
 
 export default function Inicio({ onOpen, usuario }) {
   const [grupos, setGrupos] = useState(null);
+  const [historico, setHistorico] = useState(false);
   const [convites, setConvites] = useState([]);
   const [error, setError] = useState('');
   const [loadError, setLoadError] = useState('');
@@ -103,6 +105,14 @@ export default function Inicio({ onOpen, usuario }) {
         </button>
       </section>
       <Feedback error={loadError} success={success} />
+      <button
+        className="secondary"
+        aria-expanded={historico}
+        onClick={() => setHistorico(!historico)}
+      >
+        {historico ? 'Fechar histórico' : 'Consultar grupos anteriores'}
+      </button>
+      {historico && <HistoricoGrupos />}
       <div className="dashboard-grid">
         <div className="dashboard-lists">
           <section aria-labelledby="convites-titulo" className="card">

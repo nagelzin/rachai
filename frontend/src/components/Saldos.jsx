@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../services/api.js';
 import { formatMoney } from '../services/money.js';
 import Feedback from './Feedback.jsx';
+import DetalheSaldo from './DetalheSaldo.jsx';
 
 const situacoes = {
   RECEBER: 'A receber',
@@ -12,6 +13,7 @@ const situacoes = {
 export default function Saldos({ grupoId, usuarioId, revisao }) {
   const [tentativa, setTentativa] = useState(0);
   const [resposta, setResposta] = useState(null);
+  const [detalhe, setDetalhe] = useState(null);
   const chave = `${grupoId}-${revisao}-${tentativa}`;
   const atual = resposta?.chave === chave ? resposta : null;
   const carregando = atual === null;
@@ -97,10 +99,33 @@ export default function Saldos({ grupoId, usuarioId, revisao }) {
                     <dd>{formatMoney(p.totalDevido)}</dd>
                   </div>
                 </dl>
+                <button
+                  className="text-button"
+                  aria-expanded={detalhe === p.participanteId}
+                  onClick={() =>
+                    setDetalhe(
+                      detalhe === p.participanteId ? null : p.participanteId,
+                    )
+                  }
+                >
+                  {detalhe === p.participanteId
+                    ? 'Fechar detalhamento'
+                    : 'Ver despesas deste saldo'}
+                </button>
+                {detalhe === p.participanteId && (
+                  <DetalheSaldo
+                    key={`${chave}-${p.participanteId}`}
+                    grupoId={grupoId}
+                    participanteId={p.participanteId}
+                  />
+                )}
               </li>
             ))}
           </ul>
-          <p className="balance-note">Os saldos são calculados a partir das despesas registradas.</p>
+          <p className="balance-note">
+            Estes saldos explicam as despesas. Consulte Acertos do grupo para
+            ver o que ainda falta após os pagamentos registrados.
+          </p>
         </>
       )}
     </section>

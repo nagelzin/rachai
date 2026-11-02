@@ -63,5 +63,14 @@ Na UI, foram verificados grupo sem movimento, cadastro de R$ 100,03 e edição p
 Retomada em 27/10/2026: Oracle healthy, frontend HTTP 200, proxy `/api` operacional, consulta anônima de saldos 401, consulta autenticada do grupo fictício 327 com -50.03/+50.03 e soma zero; grupo 54 bloqueado pela despesa legada 61. Conta de teste desconectada ao final. Conferência HTTP sem alterar despesas/participantes; suítes completas não repetidas porque não houve mudança no código.
 
 
+## Ondas 5–8
 
-Recorte de entrega preparado em 02/11/2026 sem repetir testes ou build, por solicitação do usuário. Resultados acima são evidências históricas, não uma nova execução deste recorte.
+Em 27/10/2026: 77 testes backend na Onda 5, 81 na Onda 6, 86 na Onda 7 e 88 na Onda 8, todos aprovados com Oracle real e sem ignorados. Regras isoladas cobrem compensação de múltiplos credores/devedores, centavos, valores grandes, conservação em 100 grupos e divisão personalizada. Integração cobre autorização/CSRF, detalhes que reconciliam saldos, histórico privado, pagamentos duplicados, cancelamento, edição/exclusão após pagamento, acerto inverso e progresso com dados incompletos. Registros em docs/ONDA_5.md até docs/ONDA_8.md.
+
+Em 31/10/2026: pacote backend gerado com sucesso a partir do mesmo código testado. Frontend: 15 testes aprovados; lint, build e formatação conferidos na retomada. Não confundir a data do empacotamento com a execução completa anterior dos testes backend.
+
+Interface em 31/10: histórico, detalhamento de saldo, cópia do resumo, registro/cancelamento fictício com progresso 0% → 100% → 0%, prévia personalizada inválida/válida e layout mobile conferidos. A prévia não foi salva pela interface; gravação é coberta pela integração. Detalhes em [ONDA_8.md](ONDA_8.md).
+
+Em 02/11/2026: repetidos os 15 testes frontend, lint, build e formatação após o ajuste do filtro de histórico; todos aprovados. Não houve alteração de código backend nem repetição desnecessária da suíte Oracle completa.
+
+O filtro de histórico foi verificado também na interface: corte inclusivo em 14/10/2026, período vazio em 01/01/2000 e restauração da lista ao limpar a data. Conferido em celular, sem rolagem horizontal. Ação única para aplicar a data e atualizar os resultados; evidência em `docs/.qa/historico-filtro-2026-11-02.png`.

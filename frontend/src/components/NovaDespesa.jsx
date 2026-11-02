@@ -26,6 +26,9 @@ export default function NovaDespesa({
   const [pagador, setPagador] = useState(String(inicial?.pagador?.id ?? ''));
   const [conflito, setConflito] = useState(false);
   const [previa, setPrevia] = useState(null);
+  const [personalizada, setPersonalizada] = useState(
+    inicial?.tipoDivisao === 'PERSONALIZADA',
+  );
   const descricaoRef = useRef(null);
   useEffect(() => {
     if (inicial) descricaoRef.current?.focus();
@@ -86,6 +89,14 @@ export default function NovaDespesa({
         data: fields.get('data'),
         pagadorId: Number(pagador),
         participanteIds: selecionados,
+        valoresIndividuais: personalizada
+          ? Object.fromEntries(
+              selecionados.map((id) => [
+                id,
+                parseMoney(fields.get(`parcela-${id}`) ?? '', true),
+              ]),
+            )
+          : undefined,
       };
       const chave = JSON.stringify(dados);
       if (previa?.chave !== chave) {
@@ -93,6 +104,7 @@ export default function NovaDespesa({
           grupoId,
           valorTotal,
           selecionados,
+          dados.valoresIndividuais,
         );
         setPrevia({ chave, parcelas });
         return;
@@ -107,6 +119,7 @@ export default function NovaDespesa({
       setSelecionados([]);
       setPagador('');
       setPrevia(null);
+      setPersonalizada(false);
       onSalva(despesa, !!inicial);
     } catch (err) {
       setPrevia(null);
@@ -243,6 +256,47 @@ export default function NovaDespesa({
           ))}
           <small>{selecionados.length} participante(s) selecionado(s).</small>
         </fieldset>
+        <label htmlFor="tipo-divisao">Como dividir?</label>
+        <select
+          id="tipo-divisao"
+          disabled={bloqueado}
+          value={personalizada ? 'PERSONALIZADA' : 'IGUAL'}
+          onChange={(e) => {
+            setPersonalizada(e.target.value === 'PERSONALIZADA');
+            setPrevia(null);
+          }}
+        >
+          <option value="IGUAL">Igualmente entre os selecionados</option>
+          <option value="PERSONALIZADA">Informar valores individuais</option>
+        </select>
+        {personalizada && (
+          <fieldset disabled={bloqueado}>
+            <legend>Parte de cada pessoa (R$)</legend>
+            <p>
+              Use zero quando necessário. A soma deve ser igual ao total da
+              despesa.
+            </p>
+            {participantes
+              .filter((p) => selecionados.includes(p.id))
+              .map((p) => (
+                <div key={p.id}>
+                  <label htmlFor={`parcela-${p.id}`}>{nomeOpcao(p)}</label>
+                  <input
+                    id={`parcela-${p.id}`}
+                    name={`parcela-${p.id}`}
+                    inputMode="decimal"
+                    maxLength={13}
+                    required
+                    defaultValue={
+                      inicial?.participantes
+                        .find((v) => v.id === p.id)
+                        ?.valorParte?.replace('.', ',') ?? ''
+                    }
+                  />
+                </div>
+              ))}
+          </fieldset>
+        )}
         <Feedback error={error} success={success} />
         {previa && (
           <section
@@ -260,7 +314,9 @@ export default function NovaDespesa({
               ))}
             </ul>
             <p>
-              Centavos restantes são distribuídos pela ordem de entrada no grupo. O total das parcelas corresponde ao valor da despesa.
+              {personalizada
+                ? 'Valores individuais conferidos. A soma corresponde ao total da despesa.'
+                : 'Centavos restantes são distribuídos pela ordem de entrada no grupo. O total das parcelas corresponde ao valor da despesa.'}
             </p>
           </section>
         )}

@@ -273,7 +273,7 @@ GrupoParticipante 1 ── N Acerto (devedor/recebedor)
 
 ## 13. API REST — contrato inicial recomendado
 
-Contrato evolutivo: este recorte implementa até a Onda 4; rotas posteriores abaixo são planejamento. O contrato disponível neste recorte está em `docs/API.md`. As seções de entregas anteriores abaixo preservam seus estados históricos.
+Contrato evolutivo: implementado até a Onda 8. O contrato vigente, incluindo rotas de registro e cancelamento de acertos, está em `docs/API.md`. As seções de entregas anteriores abaixo preservam seus estados históricos.
 
 - `POST /api/grupos` — criar grupo.
 - `GET /api/grupos/{id}` — consultar grupo.
@@ -491,6 +491,18 @@ A tela mostra A pagar, A receber ou Saldo zerado, total pago e sua parte nas des
 75 testes backend (incluindo Oracle real) e 14 frontend aprovados em 19/10/2026. Empacotamento final aprovado após liberar o JAR em uso no Windows; lint/build/formatação frontend aprovados. Conferência da interface em 19–20/10: grupo vazio, cadastro, edição, centavos, legado, foco no atalho de correção e layout de celular. Registros consolidados em 27/10/2026 em docs/ONDA_4.md. Stack vigente preservada, sem novas dependências ou migrações. A nota INSTRUÇÕES!A15:B15 do backlog registra a ativação. T25 em diante não iniciadas.
 
 
-## 26. Recorte para a primeira entrega Git
+## 26. Entrega local das Ondas 5–8
 
-Preparado em 02/11/2026 por solicitação do usuário: primeiro commit com Ondas 1–4 e contas/convites; segundo com Ondas 5–8. Os itens posteriores do roadmap são planejamento nesta cópia. Não se atribuem datas antigas aos commits. Sem novos testes ou compilações nesta organização, conforme orientação do usuário. A versão completa em uso foi preservada.
+Autorizadas em 27/10/2026 pelo pedido para continuar as próximas ondas; conferência integrada em 31/10 e retomada em 02/11/2026. T25–T42 implementadas em ordem, com testes por onda. Esta seção substitui as indicações históricas de funcionalidades futuras nas seções anteriores. F16/F19 permanecem no Parking Lot.
+
+Onda 5: detalhamento individual reconcilia despesas com o saldo, incluindo pagador fora do consumo e parcelas zero. Histórico de grupos é consultado por data de criação, pois não existe data de encerramento no modelo; não implica quitação/arquivamento. Acesso sempre depende de vínculo atual.
+
+Onda 6: algoritmo determinístico de acertos em BigDecimal, compensando devedores/credores por ID, sem promessa de mínimo global de transferências. Resumo textual consistente com despesas, parcelas, saldos e acertos; copiar/compartilhar apenas por ação da pessoa. Nenhuma mensagem externa é enviada automaticamente.
+
+Onda 7: pagamentos registrados por uma das partes como PAGO; cancelamento com versão e histórico CANCELADO. Acertos pendentes são derivados de saldo das despesas + pagamentos feitos − recebidos. Revisão da consulta, validação da sugestão e lock do grupo impedem valores desatualizados/duplicidade. Alterar/excluir despesas não apaga pagamentos e pode gerar acerto inverso. Participante com histórico de pagamentos não é removido. Não há movimentação bancária nem verificação externa do pagamento. Divisão personalizada exige exatamente as parcelas dos envolvidos, valores não negativos e soma exata; o modo fica salvo na despesa. Migração 007 aplicada sem modificar parcelas existentes.
+
+Onda 8: pendências por pessoa, total pago/pendente e progresso por quantidade de acertos. Cancelados são excluídos do cálculo, mas preservados no histórico. Percentual considera registros PAGO e sugestões atuais, podendo mudar com novas despesas/correções. Dados incompletos bloqueiam indicadores em vez de apresentar uma falsa quitação.
+
+77, 81, 86 e 88 testes backend aprovados ao concluir cada onda, com Oracle real e zero ignorados. Documentação em docs/ONDA_5.md até docs/ONDA_8.md. Não houve nova tecnologia; STACK.docx permanece vigente. Homologação, revisão humana, Issues e integração GitHub pendentes; nenhum commit/push foi feito.
+
+Fechamento técnico em 02/11/2026: botão único para aplicar o filtro de histórico e atualizar os resultados; corte inclusivo, período vazio e limpeza validados pela interface, inclusive no celular. Quinze testes frontend, lint, build e formatação aprovados. Conferência de pagamentos, prévia personalizada e resumo realizada em 31/10; detalhes e limites registrados em docs/ONDA_8.md. Serviços locais retomados preservando o banco existente.

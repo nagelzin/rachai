@@ -1,6 +1,26 @@
-# API das Ondas 1 a 4 e contas
+# API das Ondas 1 a 8 e contas
 
 Base local: `http://127.0.0.1:8081/api`. JSON UTF-8, exceto login em formulário URL encoded. A interface usa o proxy `/api` do Vite na mesma origem.
+
+## Ondas 5–8: detalhe, histórico, acertos e acompanhamento
+
+Todas as rotas exigem sessão; grupos sem vínculo retornam 404. GETs não alteram dados; operações de gravação exigem CSRF. Dinheiro continua como string decimal com duas casas na resposta.
+
+| Método e rota (após `/api`) | Contrato |
+|---|---|
+| GET `/grupos/historico?ate=AAAA-MM-DD` | Lista de grupos com vínculo atual, criada até a data inclusiva opcional, ordenada por criação/ID decrescentes. Não classifica grupos como quitados. |
+| GET `/grupos/{g}/saldos/{p}` | `completo`, `despesasPendentes`, `participante` (mesmo resumo do saldo) e `despesas`: despesaId, descricao, data, totalDespesa, pagadorNome, pago, parte, impacto. Somente despesas pagas ou consumidas pela pessoa. Impactos somam seu saldo. |
+| GET `/grupos/{g}/acertos/sugestoes` | `completo`, `despesasPendentes`, `sugestoes`, `resumo`, `revisao`, `registros`. Cada sugestão contém IDs dos vínculos e usuários, nomes devedor/recebedor e valor. A revisão é opaca e deve ser devolvida ao registrar. |
+| POST `/grupos/{g}/acertos` | Corpo `{devedorId, recebedorId, valor, revisao}`. Registra PAGO e retorna 201, somente por uma das partes, para o valor integral de uma sugestão atual. Outra parte não envolvida: 403. Revisão/valor desatualizado: 409. Reenvio da mesma revisão não duplica pagamento. |
+| POST `/grupos/{g}/acertos/{id}/cancelamento` | Corpo `{versao}`. Retorna registro CANCELADO, sem apagar histórico; somente uma das partes. Conflito de versão/status: 409. |
+| GET `/grupos/{g}/pendencias` | `completo`, `despesasPendentes`, `participantes` com participanteId, nome, aPagar e aReceber após considerar pagamentos. |
+| GET `/grupos/{g}/progresso` | Os campos acima mais quitados, pendentes, percentualConcluido, valorPago, valorPendente e semAcertos. Percentual por quantidade, com duas casas truncadas. Incompleto retorna indicadores null, não zero. |
+
+Registro de acerto: id, devedorId, recebedorId, devedorUsuarioId, recebedorUsuarioId, nomes, valor, status, registradoPorId, criadoEm, canceladoEm e versao. PAGO altera o residual das sugestões, não o saldo original das despesas; CANCELADO não conta no acompanhamento. Alterar/excluir despesa preserva pagamentos e pode gerar devolução. Não há pagamento bancário, verificação bancária ou exigência de dupla confirmação.
+
+Cadastro/edição e prévia de despesas aceitam `valoresIndividuais` opcional: por exemplo, `{"101":"2.00","102":"8.00"}` para total 10.00 e participanteIds [101,102]. Ausente/null significa divisão igual. Presente exige exatamente os mesmos IDs, valores não negativos e soma exata; soma/IDs incompatíveis retornam 409 e escala/valor inválido 400. Resposta da despesa inclui tipoDivisao IGUAL/PERSONALIZADA. Migração 007 necessária.
+
+Consultas financeiras e gravações usam o lock do grupo e revalidam o vínculo. Despesas incompletas bloqueiam detalhes/sugestões/progresso sem apresentar valores parciais. Histórico de pagamentos já registrado continua consultável, inclusive para cancelar um registro incorreto.
 
 ## Onda 4: saldos do grupo
 
@@ -39,7 +59,7 @@ Ordem crescente do ID do vínculo no grupo. `totalDevido` significa a soma das p
 
 Grupo sem despesas retorna todos os participantes com totais zero. Uma despesa incompleta/inconsistente bloqueia o resultado completo, com HTTP 200 e corpo como `{"completo":false,"despesasPendentes":[61],"participantes":[]}`. Não retorna saldos parciais nem completa os registros automaticamente. Após corrigir a despesa, consultar novamente.
 
-A transação obtém o mesmo lock do grupo usado pelas mutações, revalida o acesso e lê membros/despesas de forma consistente. Detalhamento e acertos ficam para a segunda entrega; o saldo explica as despesas.
+A transação obtém o mesmo lock do grupo usado pelas mutações, revalida o acesso e lê membros/despesas de forma consistente. Detalhamento e acertos possuem rotas próprias descritas nas Ondas 5–8; o saldo base continua explicando somente as despesas.
 
 ## Sessão e CSRF
 
@@ -112,7 +132,7 @@ Dinheiro usa string decimal com ponto e sempre duas casas no JSON, BigDecimal no
 
 Exemplo: `{"mensagem":"Confira os campos informados.","campos":{"valorTotal":"O valor deve ser maior que zero."}}`. Mensagens de banco e stack traces não são expostos. CSRF é validado antes da autorização; mutação anônima sem token pode receber 403.
 
-F10 foi antecipada por pedido de 18/10/2026. GET da coleção retorna [] para grupo vazio; contas sem vínculo recebem 404, mesmo se não houver despesas. Cada item tem o mesmo DTO do detalhe, incluindo pagador, participantes e versão. Divisão e comprovantes estão implementados na Onda 3; saldos na Onda 4; acertos previstos para a segunda entrega. Remoção de membro usado como pagador ou envolvido recebe 409; corrigir os vínculos antes de remover. Dados legados sem conta permanecem no banco e não concedem acesso a novos cadastros.
+F10 foi antecipada por pedido de 18/10/2026. GET da coleção retorna [] para grupo vazio; contas sem vínculo recebem 404, mesmo se não houver despesas. Cada item tem o mesmo DTO do detalhe, incluindo pagador, participantes e versão. Divisão e comprovantes estão implementados na Onda 3; saldos na Onda 4; acertos nas Ondas 6–8. Remoção de membro usado como pagador ou envolvido recebe 409; corrigir os vínculos antes de remover. Dados legados sem conta permanecem no banco e não concedem acesso a novos cadastros.
 
 ## Onda 3: divisão e comprovantes
 
