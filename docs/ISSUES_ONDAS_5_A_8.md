@@ -1,4 +1,6 @@
-# Rascunhos das Issues das Ondas 5–8
+# Critérios das Issues das Ondas 5–8
+
+> Atualização de 02/11/2026: issues publicadas. Números e situação atual em [ISSUES_GITHUB.md](ISSUES_GITHUB.md). O texto abaixo preserva os critérios e o estado histórico anterior à publicação.
 
 T25–T42 implementadas localmente após autorização em 27/10/2026. Números de Issue continuam `--`: nenhuma Issue foi publicada. Responsáveis e estimativas abaixo são os do backlog; revisão humana e integração GitHub pendentes.
 

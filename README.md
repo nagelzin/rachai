@@ -136,7 +136,7 @@ Pastas sem uso (hooks, routes, assets, config) não foram criadas artificialment
 
 Remoto: [nagelzin/rachai](https://github.com/nagelzin/rachai). O repositório remoto estava vazio no setup. O trabalho local está na branch `task/onda-1`, ainda sem commits, push ou PR: o contexto exige revisão e compreensão humana antes de incorporar código gerado por IA.
 
-Os rascunhos das nove Issues originais foram preparados em [docs/ISSUES_ONDA_1.md](docs/ISSUES_ONDA_1.md), mas **não foram publicadas**. As tarefas T43–T50 estão na aba ACESSO do backlog e em `docs/ACESSO_E_CONVITES.md`, com responsáveis a definir. Todos os números de Issue continuam `--`. Após conectar o GitHub, criar as Issues reais, preencher seus números e organizar a integração por tarefa com revisão. Não registrar números ou estados de conclusão fictícios. As Ondas 2–4 têm implementação local e rascunhos em `docs/ISSUES_ONDA_2.md`, `docs/ISSUES_ONDA_3.md` e `docs/ISSUES_ONDA_4.md`. T25–T42 foram implementadas nas Ondas 5–8; rascunhos complementares em `docs/ISSUES_ONDAS_5_A_8.md`.
+As 50 tarefas T01–T50 têm issues reais publicadas em 02/11/2026. Todas estão implementadas localmente, com evidências anteriores nos documentos das ondas. As issues permanecem abertas para conferência dos critérios, homologação final, revisão humana e integração. Responsáveis e estimativas do backlog foram preservados; T43–T50 continuam com responsável a definir. Nenhum teste ou build foi repetido nesta atualização. Números e links em [docs/ISSUES_GITHUB.md](docs/ISSUES_GITHUB.md) e na coluna Issue # do backlog. O código permanece nos dois commits locais; seu envio ao GitHub ainda está pendente.
 
 ## Usar as despesas da Onda 2
 

@@ -506,3 +506,10 @@ Onda 8: pendências por pessoa, total pago/pendente e progresso por quantidade d
 77, 81, 86 e 88 testes backend aprovados ao concluir cada onda, com Oracle real e zero ignorados. Documentação em docs/ONDA_5.md até docs/ONDA_8.md. Não houve nova tecnologia; STACK.docx permanece vigente. Homologação, revisão humana, Issues e integração GitHub pendentes; nenhum commit/push foi feito.
 
 Fechamento técnico em 02/11/2026: botão único para aplicar o filtro de histórico e atualizar os resultados; corte inclusivo, período vazio e limpeza validados pela interface, inclusive no celular. Quinze testes frontend, lint, build e formatação aprovados. Conferência de pagamentos, prévia personalizada e resumo realizada em 31/10; detalhes e limites registrados em docs/ONDA_8.md. Serviços locais retomados preservando o banco existente.
+
+
+## 27. Rastreabilidade GitHub em 02/11/2026
+
+As 50 tarefas T01–T50 têm issues reais publicadas em 02/11/2026. Todas estão implementadas localmente, com evidências anteriores nos documentos das ondas. As issues permanecem abertas para conferência dos critérios, homologação final, revisão humana e integração. Responsáveis e estimativas do backlog foram preservados; T43–T50 continuam com responsável a definir. Nenhum teste ou build foi repetido nesta atualização.
+
+Por decisão do usuário, o histórico inicial foi organizado em dois commits locais: `4ed4e84` (Ondas 1–4 e acesso) e `492df40` (Ondas 5–8). A publicação das issues e o preenchimento do backlog compõem um terceiro commit de documentação. Esta atualização substitui as indicações históricas de ausência de issues e commits nas seções anteriores. O push do código continua pendente. Mapeamento completo em `docs/ISSUES_GITHUB.md`.

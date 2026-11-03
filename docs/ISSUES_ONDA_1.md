@@ -1,4 +1,6 @@
-# Rascunhos das Issues da Onda 1
+# Critérios das Issues da Onda 1
+
+> Atualização de 02/11/2026: issues publicadas. Números e situação atual em [ISSUES_GITHUB.md](ISSUES_GITHUB.md). O texto abaixo preserva os critérios e o estado histórico anterior à publicação.
 
 Destino: https://github.com/nagelzin/rachai. Estes são rascunhos locais; nenhuma Issue foi criada e nenhum número foi atribuído.
 

@@ -1,4 +1,6 @@
-# Rascunhos das Issues da Onda 4
+# Critérios das Issues da Onda 4
+
+> Atualização de 02/11/2026: issues publicadas. Números e situação atual em [ISSUES_GITHUB.md](ISSUES_GITHUB.md). O texto abaixo preserva os critérios e o estado histórico anterior à publicação.
 
 Destino: https://github.com/nagelzin/rachai. Rascunhos locais; nenhuma Issue foi publicada. A coluna Issue # continua com -- até existirem números reais. Revisão humana antes do commit, conforme STACK.docx.
 
